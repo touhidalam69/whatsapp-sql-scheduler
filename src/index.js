@@ -19,6 +19,7 @@ function main() {
 const gracefulShutdown = async (signal) => {
     logger.info(`Caught ${signal}. Shutting down gracefully...`);
     try {
+        scheduler.stop();
         await whatsapp.client.destroy();
         logger.info('WhatsApp client destroyed.');
         await db.close();
