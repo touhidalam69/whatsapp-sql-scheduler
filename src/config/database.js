@@ -11,7 +11,7 @@ const sqlConfig = {
   database: process.env.DB_DATABASE,
   options: {
     encrypt: isProduction,
-    trustServerCertificate: !isProduction,
+    trustServerCertificate: true,
   },
 };
 
