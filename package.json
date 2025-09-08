@@ -1,0 +1,38 @@
+{
+  "name": "whatsapp-sql-scheduler",
+  "version": "1.0.0",
+  "description": "A Node.js WhatsApp bot for scheduling and sending messages using a SQL Server backend.",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/touhidalam69/whatsapp-sql-scheduler.git"
+  },
+  "keywords": [
+    "whatsapp",
+    "bot",
+    "scheduler",
+    "mssql",
+    "nodejs",
+    "automation"
+  ],
+  "author": "touhidalam69",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/touhidalam69/whatsapp-sql-scheduler/issues"
+  },
+  "homepage": "https://github.com/touhidalam69/whatsapp-sql-scheduler#readme",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "mime-types": "^2.1.35",
+    "mssql": "^11.0.1",
+    "qrcode-terminal": "^0.12.0",
+    "whatsapp-web.js": "^1.33.2",
+    "winston": "^3.13.0"
+  }
+}
