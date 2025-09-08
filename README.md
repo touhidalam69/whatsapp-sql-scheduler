@@ -2,7 +2,7 @@
 
 This is a robust Node.js application that automates sending and receiving WhatsApp messages, using a Microsoft SQL Server database to manage a schedule for outgoing messages.
 
-It's designed for reliability and security, featuring parameterized queries, external configuration, structured logging, and graceful shutdown.
+It's designed for reliability and security, featuring parameterized queries, external configuration, structured logging, and graceful shutdown. It also includes a production-ready build process with webpack and process management with PM2.
 
 ## Key Features
 
@@ -14,7 +14,7 @@ It's designed for reliability and security, featuring parameterized queries, ext
 - **Secure**: Protects against SQL injection and keeps credentials safe using environment variables.
 - **Resilient**: Handles message processing errors individually without crashing.
 - **Structured Logging**: Keeps detailed logs in `combined.log` and `error.log` for easy debugging.
-- **Easy Configuration**: All key settings (database credentials, business hours, polling time) are managed in a `.env` file.
+- **Production Ready**: Includes a webpack build process to bundle the application and PM2 for process management in production.
 
 ## Prerequisites
 
@@ -25,62 +25,69 @@ Before you begin, ensure you have the following installed:
 
 ## Installation & Setup
 
-Follow these steps to get the application running.
-
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/touhidalam69/whatsapp-sql-scheduler.git
-cd whatsapp-sql-scheduler
-```
-
-### 2. Install Dependencies
-
-Install the required npm packages.
-
-```bash
-npm install
-```
-
-### 3. Set up the Database
-
-You need to create the necessary tables and indexes in your SQL Server database.
-
-1.  Connect to your SQL Server instance using a tool like SQL Server Management Studio (SSMS) or Azure Data Studio.
-2.  Create a new database or choose an existing one.
-3.  Open the `database_schema.sql` file from this project.
-4.  Execute the entire SQL script. This will create two tables (`WP_MessgeSchedule` and `WP_IncomingMessages`) and a performance-enhancing index.
-
-### 4. Configure Environment Variables
-
-The application uses a `.env` file to manage all configuration.
-
-1.  Create a copy of the example file and name it `.env`.
-
+1.  **Clone the Repository**:
     ```bash
-    # On Windows
-    copy .env.example .env
-
-    # On macOS/Linux
-    cp .env.example .env
+    git clone https://github.com/touhidalam69/whatsapp-sql-scheduler.git
+    cd whatsapp-sql-scheduler
     ```
 
-2.  Open the `.env` file and fill in the values for your SQL Server instance and desired application settings.
+2.  **Install Dependencies**:
+    ```bash
+    npm install
+    ```
 
-## Running the Application
+3.  **Set up the Database**:
+    -   Connect to your SQL Server instance.
+    -   Create a new database or choose an existing one.
+    -   Execute the SQL script in `src/db/database_schema.sql` to create the necessary tables.
 
-Once the setup is complete, you can start the application with:
+4.  **Configure Environment Variables**:
+    -   Create a `.env` file by copying the `.env.example` file.
+    -   Fill in the values for your SQL Server instance and desired application settings.
+
+## Development
+
+For development, you can run the application directly with:
 
 ```bash
 npm start
 ```
 
-### First Run: WhatsApp Authentication
+This will start the application in development mode. Any changes you make to the source code will require a restart.
 
-1.  On the first run, a QR code will appear in your terminal.
-2.  Open WhatsApp on your phone, go to **Settings > Linked Devices**, and scan the QR code.
-3.  Once authenticated, the application will create a local session in the `.wwebjs_auth` folder so you don't have to scan the QR code on every run.
-4.  The bot is now running and will start processing messages according to your schedule.
+### WhatsApp Authentication
+
+On the first run, a QR code will appear in your terminal. Scan this with WhatsApp on your phone to authenticate. A session will be saved in the `.wwebjs_auth` folder for subsequent runs.
+
+## Production Build
+
+For production, you should create a bundled version of the application. This project uses webpack to bundle all the JavaScript code into a single file.
+
+To create the production build, run:
+
+```bash
+npm run build
+```
+
+This will create a `dist` directory with a `bundle.js` file inside. This is the file you will run in production.
+
+## Running in Production
+
+For running the application in a production environment, we recommend using [PM2](https://pm2.keymetrics.io/), a process manager for Node.js.
+
+This project includes an `ecosystem.config.js` file to configure PM2.
+
+1.  **Start the application with PM2**:
+    ```bash
+    npm run start:prod
+    ```
+    This will start the bundled application (`dist/bundle.js`) with PM2 in production mode.
+
+2.  **Manage the application with PM2**:
+    -   **View logs**: `pm2 logs whatsapp-bot`
+    -   **Monitor**: `pm2 monit`
+    -   **Stop**: `npm run stop:prod`
+    -   **Restart**: `pm2 restart whatsapp-bot`
 
 ## How It Works
 
