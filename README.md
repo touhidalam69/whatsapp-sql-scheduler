@@ -111,6 +111,35 @@ After the initial authentication, you can run the application with PM2 for long-
 - **Outgoing Messages**: The application polls the `WP_MessgeSchedule` table every few seconds (defined by `POLLING_INTERVAL_MS`). If it finds a pending message within the allowed `WORK_HOUR` window, it sends it.
 - **Incoming Messages**: When a user sends a message to the bot, it automatically replies with the `DEFAULT_REPLY_MESSAGE` and logs the user's original message in the `WP_IncomingMessages` table.
 
+## Database Schema
+
+The application uses two tables in the SQL Server database to manage its operations. The complete schema can be found in the `src/db/database_schema.sql` file.
+
+### `WP_MessgeSchedule`
+
+This table is used to store and schedule outgoing messages.
+
+| Column           | Type          | Description                                                                                             |
+| ---------------- | ------------- | ------------------------------------------------------------------------------------------------------- |
+| `ScheduleId`     | `INT`         | The primary key for the table.                                                                          |
+| `ScheduleDate`   | `DATETIME`    | The date and time when the message should be sent.                                                      |
+| `WhatsappNo`     | `NVARCHAR(50)` | The recipient's WhatsApp number (e.g., `1234567890@c.us`).                                              |
+| `MessageText`    | `NVARCHAR(MAX)`| The text content of the message.                                                                        |
+| `FileName`       | `NVARCHAR(500)`| The name of the file to be sent as an attachment.                                                       |
+| `Attachment`     | `NVARCHAR(MAX)`| The base64 encoded string of the file to be sent as an attachment.                                      |
+| `DeliveryStatus` | `TINYINT`     | The status of the message: `0` (Pending), `1` (Success), `2` (Failed/Not Registered).                     |
+
+### `WP_IncomingMessages`
+
+This table is used to log all incoming messages received by the bot.
+
+| Column        | Type          | Description                                       |
+| ------------- | ------------- | ------------------------------------------------- |
+| `IncomingId`  | `INT`         | The primary key for the table.                    |
+| `ReceivedAt`  | `DATETIME`    | The timestamp when the message was received.      |
+| `WhatsappNo`  | `NVARCHAR(50)` | The sender's WhatsApp number.                     |
+| `MessageBody` | `NVARCHAR(MAX)`| The content of the incoming message.              |
+
 ## Logging
 
 All application events are logged to files in the project root:
