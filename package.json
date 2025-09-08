@@ -1,6 +1,6 @@
 {
   "name": "whatsapp-sql-scheduler",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A Node.js WhatsApp bot for scheduling and sending messages using a SQL Server backend.",
   "main": "dist/bundle.js",
   "scripts": {
