@@ -8,12 +8,14 @@ const MESSAGE_STATUS = {
 
 exports.readScheduleMessage = async () => {
     const pool = await poolPromise;
+    const batchSize = parseInt(process.env.MESSAGE_BATCH_SIZE, 10) || 10;
     const rs = await pool
         .request()
         .input('DeliveryStatus', sql.TinyInt, MESSAGE_STATUS.PENDING)
         .input('WorkHourStart', sql.Int, process.env.WORK_HOUR_START || 10)
         .input('WorkHourEnd', sql.Int, process.env.WORK_HOUR_END || 19)
-        .query(`SELECT top 1 *
+        .input('BatchSize', sql.Int, batchSize)
+        .query(`SELECT top (@BatchSize) *
                 FROM dbo.WP_MessgeSchedule 
                 WHERE ScheduleDate <= getdate() 
                   AND DATEPART(HOUR, GETDATE()) BETWEEN @WorkHourStart AND @WorkHourEnd 

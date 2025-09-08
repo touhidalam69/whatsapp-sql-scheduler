@@ -51,19 +51,36 @@ async function sendScheduledMessages() {
         const messages = await op.readScheduleMessage();
         if (messages.length > 0) {
             logger.info(`Found ${messages.length} message(s) to send.`);
-            for (const item of messages) {
-                await processSingleMessage(item);
-            }
+            await Promise.all(messages.map(processSingleMessage));
         }
     } catch (error) {
-        logger.error('Error fetching scheduled messages from database:', error);
+        logger.error('Error fetching and processing scheduled messages:', error);
+    }
+}
+
+const pollingInterval = process.env.POLLING_INTERVAL_MS || 10000;
+let timerId;
+
+async function schedule() {
+    try {
+        await sendScheduledMessages();
+    } catch (error) {
+        logger.error('An unexpected error occurred in the scheduler:', error);
+    } finally {
+        timerId = setTimeout(schedule, pollingInterval);
     }
 }
 
 function start() {
-    const pollingInterval = process.env.POLLING_INTERVAL_MS || 10000;
-    setInterval(sendScheduledMessages, pollingInterval);
-    logger.info(`Scheduler started. Polling interval: ${pollingInterval}ms.`);
+    logger.info(`Scheduler starting. Polling interval: ${pollingInterval}ms.`);
+    schedule();
 }
 
-module.exports = { start };
+function stop() {
+    if (timerId) {
+        clearTimeout(timerId);
+        logger.info('Scheduler stopped.');
+    }
+}
+
+module.exports = { start, stop };

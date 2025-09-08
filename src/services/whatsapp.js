@@ -6,7 +6,7 @@ const op = require('../db/operation');
 const client = new Client({
     authStrategy: new LocalAuth(),
     puppeteer: {
-        headless: true,
+        headless: process.env.PUPPETEER_HEADLESS !== 'false',
     },
 });
 
@@ -40,7 +40,7 @@ function initialize() {
         try {
             const chat = await msg.getChat();
             const user = await msg.getContact();
-            const body = msg.body.replace(/[&/\\#,+()$~%'.":*?<>{}]/g, '');
+            const body = msg.body.replace(/[^\w\s.,!?-]/g, '');
             
             const replyMessage = process.env.DEFAULT_REPLY_MESSAGE || 'Thank you for your message.';
             await chat.sendMessage(replyMessage);
