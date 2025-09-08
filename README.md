@@ -77,11 +77,28 @@ For running the application in a production environment, we recommend using [PM2
 
 This project includes an `ecosystem.config.js` file to configure PM2.
 
+### First Run and WhatsApp Authentication
+
+The very first time you run the application in a production environment, you need to scan the QR code to authenticate. This is an interactive process that needs to be done in the foreground.
+
+1.  **Run the bundled application directly with Node.js**:
+    ```bash
+    node dist/bundle.js
+    ```
+
+2.  **Scan the QR code**: A QR code will appear in your terminal. Scan it with WhatsApp on your phone.
+
+3.  **Stop the application**: Once you are authenticated, you can stop the application by pressing `Ctrl+C`. A session file will be saved in the `.wwebjs_auth` folder.
+
+### Starting the Application with PM2
+
+After the initial authentication, you can run the application with PM2 for long-term, stable operation.
+
 1.  **Start the application with PM2**:
     ```bash
     npm run start:prod
     ```
-    This will start the bundled application (`dist/bundle.js`) with PM2 in production mode.
+    This will start the bundled application (`dist/bundle.js`) with PM2 in production mode. It will use the saved session and will not require a QR code scan.
 
 2.  **Manage the application with PM2**:
     -   **View logs**: `pm2 logs whatsapp-bot`
